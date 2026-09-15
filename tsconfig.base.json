@@ -1,0 +1,36 @@
+{
+  // Compiler options every workspace member shares. A member extends this file
+  // and adds only what is its own: lib, types, jsx, paths, include.
+  //
+  // Written for TypeScript 6.0 and ready for 7.0: no option 7.0 removes is used
+  // (baseUrl, moduleResolution node10, esModuleInterop false), and every
+  // default 6.0 changed is stated rather than inherited (strict, module,
+  // types, noUncheckedSideEffectImports), so moving to 7 is a version bump.
+  // 6.0 stays pinned until a 7.x release has the programmatic API
+  // typescript-eslint needs, planned for 7.1.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    // Ambient types are opted into by each member, never discovered from
+    // node_modules/@types.
+    "types": [],
+
+    "strict": true,
+    // An index into an array or a record may miss. Telemetry keyed by vector
+    // id is exactly that.
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  }
+}

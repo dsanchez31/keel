@@ -1,0 +1,9 @@
+{
+  "apiVersion": "keel.plan/v1",
+  "intent": "Grid-search the unexplored area to lift the fog of war",
+  "doctrine": "recon-standard@2.2.0",
+  "mission": {"type": "systematic_reconnaissance", "priority": "normal", "area": "fog_of_war_east"},
+  "tactic": {"pattern": "parallel_lanes", "orientation": "long_axis", "lanes": 4, "overlap_pct": 10},
+  "assignment": {"policy": "nearest_capable", "requires": ["aerial", "camera"], "gcs": "gcs-west"},
+  "rationale": "Four camera drones are available, so four lanes along the long axis keep turns few."
+}

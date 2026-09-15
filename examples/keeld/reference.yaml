@@ -1,0 +1,56 @@
+# keeld on the reference topology: DRONE-01 and UGV-01 are ArduPilot SITL
+# autopilots (docker-compose.yml), the four others are simulated by keelsim.
+#
+#   docker compose up sitl-copter sitl-rover
+#   keelsim --scenario examples/sims/reference.yaml --serve
+#   keeld --config examples/keeld/reference.yaml
+#
+# keelsim serves DRONE-01 and UGV-01 too; nothing dials them. Paths are
+# relative to this file (spec.md section 16).
+apiVersion: keel.daemon/v1
+name: reference
+world: ../worlds/reference.yaml
+doctrine_dir: ../../doctrine-packs
+data_dir: ../../run/keeld
+listen: 127.0.0.1:8080
+trusted_origins:
+  - http://localhost:5173
+planner:
+  backend: ollama
+
+# Both SITL push MAVLink to this port (--serial0 udpclient). Their home
+# altitude is 0 m AMSL and the world's ground the ellipsoid, hence a geoid
+# separation of 0.
+mavlink:
+  listen: 127.0.0.1:14550
+  geoid_separation_m: 0
+
+# The two SITL follow keeld's pace through SIM_SPEEDUP, the four others
+# through keelsim's clock endpoint: every vector simulated, so the live screen
+# may run faster than real time.
+vectors:
+  - id: DRONE-01
+    mavlink: {sysid: 1, sitl: true}
+  - id: UGV-01
+    mavlink: {sysid: 2, sitl: true}
+  # Simulated by keelsim, so faults can be injected on them.
+  - id: DRONE-02
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/DRONE-02"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: DRONE-03
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/DRONE-03"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: DRONE-04
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/DRONE-04"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: RELAY-01
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/RELAY-01"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"

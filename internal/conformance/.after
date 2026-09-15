@@ -1,0 +1,71 @@
+goroutine profile: total 10
+1 @ 0x449571 0x48939d 0x577af1 0x577925 0x5747a9 0x78a866 0x51fe2a 0x491d61
+#	0x577af0	runtime/pprof.writeRuntimeProfile+0xb0						/usr/lib/go-1.26/src/runtime/pprof/pprof.go:851
+#	0x577924	runtime/pprof.writeGoroutine+0x44						/usr/lib/go-1.26/src/runtime/pprof/pprof.go:784
+#	0x5747a8	runtime/pprof.(*Profile).WriteTo+0x148						/usr/lib/go-1.26/src/runtime/pprof/pprof.go:408
+#	0x78a865	github.com/dsanchez31/keel/internal/conformance_test.TestZZDebugLeak+0x585	/home/dsanchez/levector/keel/internal/conformance/zz_debug_test.go:36
+#	0x51fe29	testing.tRunner+0xe9								/usr/lib/go-1.26/src/testing/testing.go:2036
+
+1 @ 0x48a56e 0x41adce 0x41a8f2 0x520e45 0x523237 0x51fe2a 0x523105 0x521aac 0x78b1db 0x453f95 0x491d61
+#	0x520e44	testing.(*T).Run+0x4e4		/usr/lib/go-1.26/src/testing/testing.go:2109
+#	0x523236	testing.runTests.func1+0x36	/usr/lib/go-1.26/src/testing/testing.go:2585
+#	0x51fe29	testing.tRunner+0xe9		/usr/lib/go-1.26/src/testing/testing.go:2036
+#	0x523104	testing.runTests+0x504		/usr/lib/go-1.26/src/testing/testing.go:2583
+#	0x521aab	testing.(*M).Run+0x6ab		/usr/lib/go-1.26/src/testing/testing.go:2443
+#	0x78b1da	main.main+0x9a			_testmain.go:60
+#	0x453f94	runtime.main+0x2d4		/usr/lib/go-1.26/src/runtime/proc.go:290
+
+1 @ 0x48a56e 0x44ca57 0x489745 0x4c1a87 0x4c272e 0x4c271c 0x5a5705 0x5aef05 0x6fb76c 0x6fc10d 0x6fd0e5 0x6fce05 0x491d61
+#	0x489744	internal/poll.runtime_pollWait+0x84					/usr/lib/go-1.26/src/runtime/netpoll.go:351
+#	0x4c1a86	internal/poll.(*pollDesc).wait+0x26					/usr/lib/go-1.26/src/internal/poll/fd_poll_runtime.go:84
+#	0x4c272d	internal/poll.(*pollDesc).waitRead+0x2ad				/usr/lib/go-1.26/src/internal/poll/fd_poll_runtime.go:89
+#	0x4c271b	internal/poll.(*FD).Read+0x29b						/usr/lib/go-1.26/src/internal/poll/fd_unix.go:165
+#	0x5a5704	net.(*netFD).Read+0x24							/usr/lib/go-1.26/src/net/fd_posix.go:68
+#	0x5aef04	net.(*conn).Read+0x44							/usr/lib/go-1.26/src/net/net.go:196
+#	0x6fb76b	github.com/bluenviron/gomavlib/v4/pkg/timednetconn.(*conn).Read+0x8b	/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/pkg/timednetconn/conn.go:39
+#	0x6fc10c	github.com/bluenviron/gomavlib/v4.(*datagramReader).ReadPacket+0x8c	/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/channel.go:31
+#	0x6fd0e4	github.com/bluenviron/gomavlib/v4.(*Channel).runReader+0x224		/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/channel.go:207
+#	0x6fce04	github.com/bluenviron/gomavlib/v4.(*Channel).run.func1+0x24		/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/channel.go:158
+
+1 @ 0x48a56e 0x44ca57 0x489745 0x4c1a87 0x4c2c48 0x4c2c36 0x5a5805 0x5b88fb 0x5b79f0 0x779b2d 0x779b04 0x77999d 0x49adca 0x491d61
+#	0x489744	internal/poll.runtime_pollWait+0x84					/usr/lib/go-1.26/src/runtime/netpoll.go:351
+#	0x4c1a86	internal/poll.(*pollDesc).wait+0x26					/usr/lib/go-1.26/src/internal/poll/fd_poll_runtime.go:84
+#	0x4c2c47	internal/poll.(*pollDesc).waitRead+0x207				/usr/lib/go-1.26/src/internal/poll/fd_poll_runtime.go:89
+#	0x4c2c35	internal/poll.(*FD).ReadFromInet4+0x1f5					/usr/lib/go-1.26/src/internal/poll/fd_unix.go:241
+#	0x5a5804	net.(*netFD).readFromInet4+0x24						/usr/lib/go-1.26/src/net/fd_posix.go:79
+#	0x5b88fa	net.(*UDPConn).readFrom+0x19a						/usr/lib/go-1.26/src/net/udpsock_posix.go:52
+#	0x5b79ef	net.(*UDPConn).readFromUDP+0x2f						/usr/lib/go-1.26/src/net/udpsock.go:146
+#	0x779b2c	net.(*UDPConn).ReadFromUDP+0x6c						/usr/lib/go-1.26/src/net/udpsock.go:138
+#	0x779b03	github.com/dsanchez31/keel/internal/conformance.(*UDPProxy).relay+0x43	/home/dsanchez/levector/keel/internal/conformance/proxy.go:269
+#	0x77999c	github.com/dsanchez31/keel/internal/conformance.NewUDPProxy.func2+0x1c	/home/dsanchez/levector/keel/internal/conformance/proxy.go:254
+#	0x49adc9	sync.(*WaitGroup).Go.func1+0x49						/usr/lib/go-1.26/src/sync/waitgroup.go:258
+
+1 @ 0x48a56e 0x44ca57 0x489745 0x4c1a87 0x4c2c48 0x4c2c36 0x5a5805 0x5b88fb 0x5b79f0 0x779b2d 0x779b04 0x7799df 0x49adca 0x491d61
+#	0x489744	internal/poll.runtime_pollWait+0x84					/usr/lib/go-1.26/src/runtime/netpoll.go:351
+#	0x4c1a86	internal/poll.(*pollDesc).wait+0x26					/usr/lib/go-1.26/src/internal/poll/fd_poll_runtime.go:84
+#	0x4c2c47	internal/poll.(*pollDesc).waitRead+0x207				/usr/lib/go-1.26/src/internal/poll/fd_poll_runtime.go:89
+#	0x4c2c35	internal/poll.(*FD).ReadFromInet4+0x1f5					/usr/lib/go-1.26/src/internal/poll/fd_unix.go:241
+#	0x5a5804	net.(*netFD).readFromInet4+0x24						/usr/lib/go-1.26/src/net/fd_posix.go:79
+#	0x5b88fa	net.(*UDPConn).readFrom+0x19a						/usr/lib/go-1.26/src/net/udpsock_posix.go:52
+#	0x5b79ef	net.(*UDPConn).readFromUDP+0x2f						/usr/lib/go-1.26/src/net/udpsock.go:146
+#	0x779b2c	net.(*UDPConn).ReadFromUDP+0x6c						/usr/lib/go-1.26/src/net/udpsock.go:138
+#	0x779b03	github.com/dsanchez31/keel/internal/conformance.(*UDPProxy).relay+0x43	/home/dsanchez/levector/keel/internal/conformance/proxy.go:269
+#	0x7799de	github.com/dsanchez31/keel/internal/conformance.NewUDPProxy.func1+0x1e	/home/dsanchez/levector/keel/internal/conformance/proxy.go:253
+#	0x49adc9	sync.(*WaitGroup).Go.func1+0x49						/usr/lib/go-1.26/src/sync/waitgroup.go:258
+
+1 @ 0x48a56e 0x4676a5 0x6fcad4 0x491d61
+#	0x6fcad3	github.com/bluenviron/gomavlib/v4.(*Channel).run+0x233	/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/channel.go:169
+
+1 @ 0x48a56e 0x4676a5 0x6fd55e 0x6fcda5 0x491d61
+#	0x6fd55d	github.com/bluenviron/gomavlib/v4.(*Channel).runWriter+0x7d	/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/channel.go:250
+#	0x6fcda4	github.com/bluenviron/gomavlib/v4.(*Channel).run.func2+0x24	/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/channel.go:164
+
+1 @ 0x48a56e 0x4676a5 0x6fd9f9 0x491d61
+#	0x6fd9f8	github.com/bluenviron/gomavlib/v4.(*channelProvider).run+0x258	/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/channel_provider.go:59
+
+1 @ 0x48a56e 0x4676a5 0x6ff1ec 0x491d61
+#	0x6ff1eb	github.com/bluenviron/gomavlib/v4.(*Node).run+0x1ab	/home/dsanchez/go/pkg/mod/github.com/bluenviron/gomavlib/v4@v4.0.0/node.go:259
+
+1 @ 0x48a56e 0x4676a5 0x7846dc 0x491d61
+#	0x7846db	github.com/dsanchez31/keel/adapters/mavlink/mavlinktest.(*Autopilot).run+0x17b	/home/dsanchez/levector/keel/adapters/mavlink/mavlinktest/autopilot.go:197
+

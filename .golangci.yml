@@ -1,0 +1,98 @@
+# golangci-lint configuration.
+#
+# The forbidigo block is the mechanical half of spec.md section 12. It is scoped
+# to the four decision-path packages, where purity is normative. Everywhere else
+# a clock read or an environment lookup is ordinary code.
+#
+# Map iteration order is not expressible as a lint pattern. It is caught by
+# review and by the DST harness, which surfaces it as a seed-dependent failure.
+
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  default: standard
+  enable:
+    - forbidigo
+    - gocritic
+    - misspell
+    - revive
+    - unconvert
+
+  settings:
+    forbidigo:
+      analyze-types: true
+      forbid:
+        # Wall clock. Mission time is an int64 advanced by exactly one tick.
+        - pattern: '^time\.Now$'
+          msg: "decision path: no wall clock, use the logical clock in engine.State"
+        - pattern: '^time\.Since$'
+          msg: "decision path: no wall clock, use the logical clock in engine.State"
+        - pattern: '^time\.Until$'
+          msg: "decision path: no wall clock, use the logical clock in engine.State"
+        - pattern: '^time\.Tick$'
+          msg: "decision path: no wall clock, the daemon owns the tick loop"
+        - pattern: '^time\.After$'
+          msg: "decision path: no wall clock, the daemon owns the tick loop"
+        - pattern: '^time\.NewTimer$'
+          msg: "decision path: no wall clock, the daemon owns the tick loop"
+        - pattern: '^time\.NewTicker$'
+          msg: "decision path: no wall clock, the daemon owns the tick loop"
+
+        # Randomness. Only the seeded math/rand/v2 source carried in State.
+        # analyze-types expands the package selector to its import path, so
+        # the patterns are written against "math/rand/v2.Foo", not "rand.Foo".
+        # Constructors are deliberately absent: engine.NewRand calls NewPCG.
+        - pattern: '^math/rand(/v2)?\.(Int|Intn|IntN|Int31|Int31n|Int32|Int32N|Int63|Int63n|Int64|Int64N|Uint|UintN|Uint32|Uint32N|Uint64|Uint64N|Float32|Float64|Perm|Shuffle|Seed|N|NormFloat64|ExpFloat64)$'
+          msg: "decision path: that is the global source, use the seeded engine.Rand carried in State"
+        - pattern: '^crypto/rand\.'
+          msg: "decision path: no non-reproducible randomness"
+
+        # Ambient input.
+        - pattern: '^os\.Getenv$'
+          msg: "decision path: no ambient input, pass configuration through State"
+        - pattern: '^os\.LookupEnv$'
+          msg: "decision path: no ambient input, pass configuration through State"
+        - pattern: '^os\.Environ$'
+          msg: "decision path: no ambient input, pass configuration through State"
+
+        # Concurrency. Step starts no goroutines and reads no channels.
+        - pattern: '^runtime\.NumGoroutine$'
+          msg: "decision path: no concurrency inside a decision"
+
+    revive:
+      rules:
+        - name: exported
+          disabled: true
+
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+
+  exclusions:
+    generated: lax
+    rules:
+      # forbidigo applies to the decision path only. Everything else may do I/O,
+      # read a clock and start goroutines, which is the point of the boundary.
+      - path-except: '^internal/(engine|coverage|assign|doctrine)/'
+        linters:
+          - forbidigo
+      - path: '_test\.go$'
+        linters:
+          - gocritic
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/dsanchez31/keel
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

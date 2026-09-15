@@ -1,0 +1,53 @@
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Code coverage profiles and other test artifacts
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file
+.env
+
+# Editor/IDE
+.idea/
+.vscode/
+.claude/
+
+# Build output
+bin/
+dist/
+
+# Node / pnpm workspace
+node_modules/
+.pnpm-store/
+*.tsbuildinfo
+
+# Local runtime artifacts
+run/
+*.keellog
+# The reference recording, 62 MB keelsim rebuilds byte for byte from its seed
+# (`make reference-log`); its chain is pinned in cmd/keelsim/testdata.
+examples/replays/run-042.log
+
+
+# Private draft, never committed
+docs/outreach.md

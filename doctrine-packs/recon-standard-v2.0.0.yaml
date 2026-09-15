@@ -1,0 +1,47 @@
+# Standard reconnaissance doctrine, 2.0.0.
+#
+# Grammar and semantics: spec.md section 6. Constraints hold per vector at
+# every tick and are also gate 4 of plan validation. Rules fire on an edge,
+# once per stretch of truth; the highest priority wins per vector and the
+# others are recorded as shadowed.
+apiVersion: keel.doctrine/v1
+name: recon-standard
+version: 2.0.0
+
+params:
+  # Battery held back from every range computation: allocation, plan
+  # feasibility and the battery-reserve constraint all read this one value.
+  battery_reserve_pct: 15
+
+roles:
+  - id: scanner
+    requires: [aerial, camera]
+  - id: ground-scanner
+    requires: [camera, ground]
+  - id: relay
+    requires: [aerial, radio_mesh]
+
+constraints:
+  # Enough battery to reach the nearest GCS, plus the reserve.
+  - id: battery-reserve
+    rule: agent.battery_pct >= agent.rtb_cost_pct + doctrine.battery_reserve_pct
+  # The AO bounds lane work. Transit to and from a GCS outside the AO is not
+  # lane work, so a fleet idle at its base passes gate 4.
+  - id: geofence
+    rule: agent.mode != SCANNING or agent.position within mission.area
+
+rules:
+  - id: rtb-on-low-battery
+    when: violates(battery-reserve)
+    then: return_to_base(agent), release_lanes(agent), redecompose(policy=nearest_capable)
+    priority: 200
+
+  - id: reassign-on-link-loss
+    when: agent.link_state == LOST for 10s
+    then: release_lanes(agent), redecompose(policy=nearest_capable)
+    priority: 100
+
+  - id: notify-on-degraded-link
+    when: agent.link_state == DEGRADED for 3s
+    then: notify_operator(message="link degraded")
+    priority: 10

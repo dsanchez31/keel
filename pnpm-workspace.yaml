@@ -1,0 +1,26 @@
+# The pnpm workspace: its members and every pnpm setting. Since pnpm 11 the
+# settings live in this file; .npmrc is read for registry and auth only, and
+# KEEL uses neither, so the repository has none. pnpm 12 refuses an unknown
+# key here, so a misspelt setting fails the install instead of being ignored.
+
+packages:
+  - web
+  - sdk-ts
+
+# Fail an install whose toolchain does not match what a package declares,
+# rather than warn and run on one nobody tested.
+engineStrict: true
+
+# Record a dependency at the exact version resolved. The lockfile pins it
+# anyway; an exact specifier makes package.json say what actually runs.
+saveExact: true
+
+# Link a member only where a dependency asks for it with workspace:*, as web
+# does for @keel/sdk, so a published version never stands in for the local
+# one, nor the reverse.
+linkWorkspacePackages: false
+
+# minimumReleaseAge keeps its pnpm 11 default of 1440 minutes: a version
+# younger than a day is not resolved, the window in which the registry usually
+# pulls a compromised release. allowBuilds is left to the frontend scaffold,
+# which adds the few packages whose install script has to run.

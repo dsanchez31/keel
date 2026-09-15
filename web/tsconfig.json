@@ -1,0 +1,14 @@
+{
+  // Compiles nothing: the app and the build tooling are checked by
+  // tsconfig.app.json and tsconfig.node.json, each run by `pnpm typecheck`.
+  // The `@/` alias is repeated here because tools reading the root tsconfig
+  // resolve it from this file: the shadcn CLI writes a component to a literal
+  // `./@/` directory without it.
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

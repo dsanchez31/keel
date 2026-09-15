@@ -1,0 +1,93 @@
+<!doctype html>
+<!--
+  The demo video's closing card (demo-video.mjs): the fence of design.md
+  section 2 in the tactical visual language. 1920 × 1080, standalone; the
+  recorder injects Geist Mono as a data URI, a page set from a string having
+  no origin to load a font from.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>KEEL architecture</title>
+    <style>
+      :root {
+        --ground: #05080c;
+        --surface: #0b121a;
+        --line: #1c2a36;
+        --text: #e6f7ff;
+        --muted: #7f9aa8;
+        --cyan: #22d3ee;
+        --magenta: #e040fb;
+        --amber: #fbbf24;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      html, body { width: 1920px; height: 1080px; background: var(--ground); color: var(--text); }
+      body { font-family: 'Geist Mono', ui-monospace, monospace; padding: 72px 96px; display: flex; flex-direction: column; gap: 44px; }
+      header h1 { font-size: 64px; font-weight: 700; letter-spacing: 0.3em; }
+      header p { margin-top: 10px; font-size: 26px; color: var(--muted); }
+      .row { display: flex; align-items: center; gap: 18px; }
+      .box { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; min-width: 190px; }
+      .box b { display: block; font-size: 22px; letter-spacing: 0.08em; }
+      .box span { display: block; margin-top: 6px; font-size: 16px; color: var(--muted); }
+      .box.model { border-color: rgba(251, 191, 36, 0.6); }
+      .box.gate { border-color: rgba(34, 211, 238, 0.8); }
+      .box.engine { border-color: rgba(34, 211, 238, 0.8); min-width: 420px; }
+      .arrow { color: var(--cyan); font-size: 30px; }
+      .fence { position: relative; border-top: 3px dashed var(--magenta); margin: 8px 0; }
+      .fence em { position: absolute; right: 0; top: -34px; font-style: normal; color: var(--magenta); font-size: 20px; letter-spacing: 0.2em; text-transform: uppercase; }
+      .above, .below { font-size: 18px; color: var(--muted); margin-bottom: 14px; }
+      .props { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+      .props div { border-left: 3px solid var(--cyan); padding: 4px 0 4px 18px; font-size: 21px; line-height: 1.4; }
+      .props div small { display: block; color: var(--muted); font-size: 16px; margin-top: 6px; }
+      footer { margin-top: auto; display: flex; justify-content: space-between; font-size: 20px; color: var(--muted); }
+      footer strong { color: var(--cyan); font-weight: 500; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>KEEL</h1>
+      <p>An intent compiler for heterogeneous autonomous fleets</p>
+    </header>
+
+    <section>
+      <p class="above">Above the fence, being wrong is cheap: the validator rejects, the repair loop retries, the operator discards.</p>
+      <div class="row">
+        <div class="box"><b>INTENT</b><span>plain language</span></div>
+        <div class="arrow">→</div>
+        <div class="box model"><b>PLANNER</b><span>LLM, local by default</span></div>
+        <div class="arrow">→</div>
+        <div class="box"><b>PLAN IR</b><span>closed schema</span></div>
+        <div class="arrow">→</div>
+        <div class="box"><b>EXPANDER</b><span>geometry in code</span></div>
+        <div class="arrow">→</div>
+        <div class="box"><b>VALIDATOR</b><span>four gates, doctrine</span></div>
+        <div class="arrow">→</div>
+        <div class="box gate"><b>HUMAN GATE</b><span>approve what you see</span></div>
+      </div>
+    </section>
+
+    <div class="fence"><em>the fence</em></div>
+
+    <section>
+      <p class="below">Below the fence, nothing is uncertain: same inputs, same decisions, and the hash chain proves it.</p>
+      <div class="row">
+        <div class="box engine"><b>ENGINE</b><span>Step(state, events): pure, seeded, hash-chained</span></div>
+        <div class="arrow">→</div>
+        <div class="box"><b>COMMANDS</b><span>one Vector contract</span></div>
+        <div class="arrow">→</div>
+        <div class="box"><b>VEHICLES</b><span>native protocol, MAVLink to ArduPilot</span></div>
+      </div>
+    </section>
+
+    <section class="props">
+      <div>The Plan IR cannot express a coordinate<small>Areas are names, resolved server side</small></div>
+      <div>The model chooses the tactic, code computes the geometry<small>Four scalars and a rationale, nothing more</small></div>
+      <div>A human approves before anything moves<small>A content-addressed plan, drawn for inspection</small></div>
+    </section>
+
+    <footer>
+      <span>Same seed, same events: <strong>byte-identical decisions</strong>, replayed and verified</span>
+      <span>github.com/dsanchez31/keel</span>
+    </footer>
+  </body>
+</html>

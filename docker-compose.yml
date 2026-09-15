@@ -1,0 +1,150 @@
+# KEEL's local stack, one command from a clean clone (Linux, or Docker Desktop
+# with host networking enabled):
+#
+#   make docker-up        # docker compose up --build, version and commit stamped
+#
+# Two ArduPilot SITL autopilots (DRONE-01, UGV-01), keelsim serving the four
+# other vectors of the reference world, keeld driving all six under
+# examples/keeld/reference.yaml, and the web UI on http://localhost:5173 with
+# the API behind it. The reference mission, recorded when keeld's image is
+# built, is served as mission MSN-042, so /replays/MSN-042 works before any
+# mission has run.
+#
+# The planner is the host's: keeld reaches Ollama on 127.0.0.1:11434 (or
+# OLLAMA_HOST) with qwen3:14b pulled, or Claude when ANTHROPIC_API_KEY is set
+# and the configuration names it. Everything except compiling an intent runs
+# without either.
+#
+# Every service is on the host network. Each SITL pushes MAVLink v2 straight to
+# UDP 127.0.0.1:14550, where keeld's mavlink.Link listens for both and routes
+# by system id, and the addresses of examples/keeld/reference.yaml (keelsim on
+# 127.0.0.1:8090, keeld on 127.0.0.1:8080) hold unchanged. keeld and keelsim
+# listen on loopback only, since neither API carries authentication. No
+# MAVProxy: KEEL talks to the autopilot itself. SERIAL1 stays on TCP for a
+# ground station to watch a vehicle: QGroundControl on tcp://127.0.0.1:5762
+# (copter) or 5772 (rover).
+#
+# Home altitude is 0 m AMSL: the reference world puts the ground on the
+# ellipsoid (examples/worlds/reference.yaml), so these vehicles run with a
+# geoid separation of 0.
+name: keel
+
+x-sitl: &sitl
+  image: keel-sitl:4.7.1
+  build:
+    context: ./build
+    dockerfile: sitl.Dockerfile
+  # The published SITL binaries are x86_64 only.
+  platform: linux/amd64
+  # SITL sends to 127.0.0.1, which inside a bridge network is the container
+  # itself, and port mapping forwards inbound traffic only.
+  network_mode: host
+  # SITL as PID 1 would ignore SIGTERM, and every stop would wait out the
+  # kill timeout.
+  init: true
+
+services:
+  # DRONE-01 of the reference world, on its pad.
+  sitl-copter:
+    <<: *sitl
+    command:
+      - /opt/ardupilot/arducopter
+      - --model
+      - "+"
+      - --speedup
+      - "1"
+      - --defaults
+      - /opt/ardupilot/copter.parm
+      - --home
+      - 45.02683,5.00526,0,0
+      - --instance
+      - "0"
+      - --sysid
+      - "1"
+      - --serial0
+      - udpclient:127.0.0.1:14550
+      # Parameters from the defaults at every start, not from the last run.
+      - --wipe
+
+  # UGV-01 of the reference world, on its pad. Instance 1 shifts every SITL
+  # port by 10 so both run on the host network.
+  sitl-rover:
+    <<: *sitl
+    command:
+      - /opt/ardupilot/ardurover
+      - --model
+      - rover
+      - --speedup
+      - "1"
+      - --defaults
+      - /opt/ardupilot/rover.parm
+      - --home
+      - 45.02668,5.00506,0,0
+      - --instance
+      - "1"
+      - --sysid
+      - "2"
+      - --serial0
+      - udpclient:127.0.0.1:14550
+      - --wipe
+
+  # The four simulated vectors of the reference world (and DRONE-01 and UGV-01,
+  # which nothing dials), over the native protocol, with the fault endpoint
+  # through which the demo loses DRONE-02. The scenario and its world, plan and
+  # packs are read from the repository, mounted where keelsim's defaults find
+  # them.
+  keelsim:
+    image: keel-keelsim:dev
+    build:
+      context: .
+      dockerfile: build/keelsim.Dockerfile
+      args: &version
+        VERSION: ${KEEL_VERSION:-dev}
+        COMMIT: ${KEEL_COMMIT:-unknown}
+    network_mode: host
+    command: ["--serve"]
+    volumes:
+      - ./examples:/keel/examples:ro
+      - ./doctrine-packs:/keel/doctrine-packs:ro
+
+  # The orchestrator. It dials keelsim in the background until it answers and
+  # hears each SITL once it pushes, so no start order is needed. Missions are
+  # recorded in the keel-run volume, which starts with the reference mission
+  # the image's demo target recorded at build time as the finished mission
+  # MSN-042; the first live mission is MSN-043.
+  keeld:
+    image: keel-keeld:dev
+    build:
+      context: .
+      dockerfile: build/keeld.Dockerfile
+      target: demo
+      args: *version
+    network_mode: host
+    command: ["--config", "examples/keeld/reference.yaml"]
+    environment:
+      # Passed through only when set on the host.
+      - OLLAMA_HOST
+      - ANTHROPIC_API_KEY
+    volumes:
+      - ./examples:/keel/examples:ro
+      - ./doctrine-packs:/keel/doctrine-packs:ro
+      - keel-run:/keel/run
+    # A running mission's shutdown: its abort tick, up to 3 s for the vehicles
+    # to acknowledge, the streams, then up to 5 s for the HTTP server.
+    stop_grace_period: 15s
+
+  # The UI, and the one origin the browser sees: nginx serves the bundle and
+  # relays /api and the stream to keeld (build/web.nginx.conf.template).
+  web:
+    image: keel-web:dev
+    build:
+      context: .
+      dockerfile: build/web.Dockerfile
+    network_mode: host
+    environment:
+      KEELD_URL: http://127.0.0.1:8080
+      WEB_PORT: "5173"
+
+volumes:
+  # Mission logs, kept across restarts; `make docker-down` removes them.
+  keel-run:

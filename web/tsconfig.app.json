@@ -1,0 +1,15 @@
+{
+  // The application under src/, tests included.
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    // Relative to this file: TypeScript 7 removes baseUrl, and paths needs no
+    // base since 4.1.
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
+}

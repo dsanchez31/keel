@@ -1,0 +1,59 @@
+# Reference simulation: the scenario of spec.md section 14.
+#
+# The world file names the AO, the stations and the fleet; the Plan IR is what
+# the operator approved. This file adds only what the simulator needs and the
+# planner never sees: physics and the faults to inject. Paths are relative to
+# this file.
+apiVersion: keel.sim/v1
+name: reference
+seed: 42
+mission: MSN-042
+world: ../worlds/reference.yaml
+plan: ../plans/reference.json
+
+kinematics:
+  # Vertical speed cap of an aerial vehicle, climbing to or descending from
+  # the scan altitude.
+  climb_rate_mps: 5
+
+comms:
+  # From the nearest station. The far end of the AO is about 7.5 km from
+  # gcs-west, well inside.
+  range_m: 15000
+  # Per frame and per command. A lost command is repaired by the engine
+  # re-sending it with the same Seq.
+  loss_pct: 2
+  # Whole ticks. Enough to reorder frames now and then.
+  jitter_ms: 200
+
+blackout_zones:
+  # A radio shadow north of the AO, off every route the reference plan flies:
+  # present for the globe to draw, silent in the reference run.
+  - name: ridge-shadow
+    center: {lat: 45.0560, lon: 5.0600}
+    radius_m: 600
+
+terrain:
+  cell_m: 25
+  blocked:
+    # A drainage canal across the plain. Only the ground vector drives, and
+    # the reference plan requires aerial vectors, so nothing routes around it
+    # in the reference run.
+    - name: canal
+      polygon:
+        - {lat: 45.0100, lon: 5.0300}
+        - {lat: 45.0100, lon: 5.0330}
+        - {lat: 45.0450, lon: 5.0330}
+        - {lat: 45.0450, lon: 5.0300}
+
+sensors:
+  gps_noise_m: 1.5
+
+battery:
+  hover_drain_pct_per_min: 0.5
+
+faults:
+  - at_coverage_pct: 60
+    vector: DRONE-02
+    kind: link_loss
+    description: the injected fault of spec.md section 14

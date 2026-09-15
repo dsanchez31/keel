@@ -1,0 +1,19 @@
+{
+  "name": "keel",
+  "private": true,
+  "description": "KEEL pnpm workspace root: web and sdk-ts. The Go module builds with make.",
+  "license": "MIT",
+  "type": "module",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.4.1",
+      "onFail": "download"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "^24.15.0",
+      "onFail": "download"
+    }
+  }
+}

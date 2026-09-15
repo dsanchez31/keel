@@ -1,0 +1,12 @@
+{
+  // A source package: web/ compiles src/ with its own bundler through the
+  // `exports` of package.json, so nothing here emits. `pnpm typecheck` checks
+  // it on its own. A build to dist/ with declarations comes with publishing to
+  // npm.
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // fetch, Response, WebSocket: the browser's, which Node 24 also provides.
+    "lib": ["ES2022", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src"]
+}

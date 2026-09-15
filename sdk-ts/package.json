@@ -1,0 +1,24 @@
+{
+  "name": "@keel/sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "KEEL's wire types, generated from the Go types, with the REST and stream clients.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.10.0",
+    "globals": "17.12.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "5.0.0"
+  }
+}

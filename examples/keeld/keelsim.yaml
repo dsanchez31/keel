@@ -1,0 +1,56 @@
+# keeld against keelsim alone: every vector of the reference world simulated,
+# no Docker, no SITL, no credentials with the default Ollama backend. Start
+# the fleet first, from the repository root:
+#
+#   keelsim --scenario examples/sims/reference.yaml --serve
+#   keeld --config examples/keeld/keelsim.yaml
+#
+# Paths are relative to this file (spec.md section 16).
+apiVersion: keel.daemon/v1
+name: reference-keelsim
+world: ../worlds/reference.yaml
+doctrine_dir: ../../doctrine-packs
+# Gitignored: each mission records into missions/MSN-NNN/ below it.
+data_dir: ../../run/keeld
+listen: 127.0.0.1:8080
+# The frontend's dev server, allowed to approve plans through the operator's
+# browser.
+trusted_origins:
+  - http://localhost:5173
+planner:
+  backend: ollama
+
+# Every vector on keelsim --serve's default address, faults through its fault
+# endpoint (this is how the demo loses DRONE-02), its pace through its clock
+# endpoint (this is how the live screen runs faster than real time).
+vectors:
+  - id: DRONE-01
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/DRONE-01"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: DRONE-02
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/DRONE-02"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: DRONE-03
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/DRONE-03"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: DRONE-04
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/DRONE-04"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: RELAY-01
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/RELAY-01"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"
+  - id: UGV-01
+    native:
+      url: "ws://127.0.0.1:8090/v1/vectors/UGV-01"
+      faults: "http://127.0.0.1:8090/v1/faults"
+      clock: "http://127.0.0.1:8090/v1/clock"

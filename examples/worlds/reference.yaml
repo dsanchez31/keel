@@ -1,0 +1,98 @@
+# Reference world: the scenario of spec.md section 14.
+#
+# Everything a Plan IR names is resolved here, server side. The planner sees
+# the names, never the coordinates.
+#
+# Positions are WGS84, altitudes in metres above the ellipsoid (spec.md
+# section 3), which matches the ellipsoid terrain the frontend uses by default.
+apiVersion: keel.world/v1
+name: reference
+
+areas:
+  # Open farmland on the Bievre plain, Isere. An irregular convex hexagon of
+  # about 5.8 km by 3.9 km, 14.3 square kilometres, longer from west-south-west
+  # to east-north-east.
+  - name: fog_of_war_east
+    cell_m: 50
+    scan_alt_m: 120
+    polygon:
+      - {lat: 45.02050, lon: 5.02415}
+      - {lat: 45.01205, lon: 5.04805}
+      - {lat: 45.01839, lon: 5.08241}
+      - {lat: 45.03422, lon: 5.09735}
+      - {lat: 45.04689, lon: 5.07345}
+      - {lat: 45.03950, lon: 5.03610}
+
+stations:
+  # About 1.5 km west of the AO: transit to and from it is not lane work.
+  - name: gcs-west
+    position: {lat: 45.02683, lon: 5.00506, alt_m: 0}
+
+# The fleet at launch: idle on the pad next to the GCS, full batteries.
+fleet:
+  - id: DRONE-01
+    domain: aerial
+    tags: [aerial, camera, gps]
+    cruise_speed: 18
+    max_range_m: 60000
+    sensor_radius_m: 90
+    state:
+      position: {lat: 45.02683, lon: 5.00526, alt_m: 0}
+      battery_pct: 100
+      link: ok
+      mode: idle
+  - id: DRONE-02
+    domain: aerial
+    tags: [aerial, camera, gps]
+    cruise_speed: 18
+    max_range_m: 60000
+    sensor_radius_m: 90
+    state:
+      position: {lat: 45.02698, lon: 5.00526, alt_m: 0}
+      battery_pct: 100
+      link: ok
+      mode: idle
+  - id: DRONE-03
+    domain: aerial
+    tags: [aerial, camera, gps]
+    cruise_speed: 18
+    max_range_m: 60000
+    sensor_radius_m: 90
+    state:
+      position: {lat: 45.02668, lon: 5.00526, alt_m: 0}
+      battery_pct: 100
+      link: ok
+      mode: idle
+  - id: DRONE-04
+    domain: aerial
+    tags: [aerial, camera, gps]
+    cruise_speed: 18
+    max_range_m: 60000
+    sensor_radius_m: 90
+    state:
+      position: {lat: 45.02683, lon: 5.00546, alt_m: 0}
+      battery_pct: 100
+      link: ok
+      mode: idle
+  - id: UGV-01
+    domain: ground
+    tags: [camera, gps, ground]
+    cruise_speed: 6
+    max_range_m: 30000
+    sensor_radius_m: 40
+    state:
+      position: {lat: 45.02668, lon: 5.00506, alt_m: 0}
+      battery_pct: 100
+      link: ok
+      mode: idle
+  - id: RELAY-01
+    domain: aerial
+    tags: [aerial, radio_mesh]
+    cruise_speed: 20
+    max_range_m: 80000
+    sensor_radius_m: 0
+    state:
+      position: {lat: 45.02698, lon: 5.00506, alt_m: 0}
+      battery_pct: 100
+      link: ok
+      mode: idle

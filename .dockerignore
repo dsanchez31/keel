@@ -1,0 +1,16 @@
+# Build context of build/keeld.Dockerfile, build/keelsim.Dockerfile and
+# build/web.Dockerfile: the repository root. Each Dockerfile copies what it
+# needs; this keeps the rest out of the context sent to the builder.
+
+.git
+.claude
+**/node_modules
+bin
+run
+web/dist
+**/*.tsbuildinfo
+*.keellog
+# Go test fixtures, and the reference recording when `make reference-log`
+# wrote one: keeld's demo image records its own from the scenario.
+internal/**/testdata
+examples/replays
